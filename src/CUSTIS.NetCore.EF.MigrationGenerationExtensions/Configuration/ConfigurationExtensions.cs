@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace CUSTIS.NetCore.EF.MigrationGenerationExtensions.Configuration
 {
@@ -14,6 +15,7 @@ namespace CUSTIS.NetCore.EF.MigrationGenerationExtensions.Configuration
         /// <summary> Добавляет сервисы, используемые во внутреннем контейнере DbContext </summary>
         internal static void AddServices(this IServiceCollection services)
         {
+           // services.AddSingleton<ICreateToDropSqlCodeTransformer, CreateToDropSqlCodeTramsformer>();
             services.AddSingleton<ICustomSqlGenerator, CreateOrUpdateSqlObjectSqlGenerator>();
             services.AddSingleton<ICustomSqlGenerator, DropSqlObjectSqlGenerator>();
             services.AddSingleton<IModelDiffer, SqlObjectsDiffer>();
@@ -23,7 +25,6 @@ namespace CUSTIS.NetCore.EF.MigrationGenerationExtensions.Configuration
         public static void UseCommonSqlObjects(this DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.ReplaceService<IMigrationsModelDiffer, CustomMigrationsModelDiffer>();
-
             ((IDbContextOptionsBuilderInfrastructure)optionsBuilder).AddOrUpdateExtension(new SqlObjectsExtension());
         }
     }

@@ -43,11 +43,11 @@ namespace UnitTests.Generation
         {
             //Arrange
             var standardOp1 = new RenameTableOperation { Name = "T_OLD", NewName = "T_NEW" };
-            var sqlOp1 = new CreateOrUpdateSqlObjectOperation("v_view", "create v_view as select", 20);
-            var sqlOp2 = new CreateOrUpdateSqlObjectOperation("v_view_2", "create v_view_2 as select", 30);
+            var sqlOp1 = new CreateOrUpdateSqlObjectOperation("v_view", "create view v_view as select", 20);
+            var sqlOp2 = new CreateOrUpdateSqlObjectOperation("v_view_2", "create view v_view_2 as select", 30);
             var standardOp2 = new RenameTableOperation { Name = "T_OLD_2", NewName = "T_NEW_2" };
-            var drop1 = new DropSqlObjectOperation(sqlOp1.Name, "DROP v_view", sqlOp1.Order);
-            var drop2 = new DropSqlObjectOperation(sqlOp2.Name, "DROP v_view_2", sqlOp2.Order);
+            var drop1 = new DropSqlObjectOperation(sqlOp1.Name, sqlOp1.SqlCode, sqlOp1.Order);
+            var drop2 = new DropSqlObjectOperation(sqlOp2.Name, sqlOp2.SqlCode, sqlOp2.Order);
 
             var upOps = new MigrationOperation[]
             {

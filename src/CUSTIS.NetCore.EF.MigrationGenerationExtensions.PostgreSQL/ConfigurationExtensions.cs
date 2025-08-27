@@ -1,4 +1,6 @@
 using CUSTIS.NetCore.EF.MigrationGenerationExtensions.Configuration;
+using CUSTIS.NetCore.EF.MigrationGenerationExtensions.Generation.Contracts;
+using CUSTIS.NetCore.EF.MigrationGenerationExtensions.PostgreSQL.DropGeneration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 
@@ -11,7 +13,7 @@ namespace CUSTIS.NetCore.EF.MigrationGenerationExtensions.PostgreSQL
         public static void UseSqlObjects(this DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseCommonSqlObjects();
-
+            optionsBuilder.ReplaceService<ISqlDropScriptGenerator, PostgreSqlDropScriptGenerator>();
             optionsBuilder.ReplaceService<IMigrationsSqlGenerator, CustomNpgsqlMigrationsSqlGenerator>();
         }
     }
