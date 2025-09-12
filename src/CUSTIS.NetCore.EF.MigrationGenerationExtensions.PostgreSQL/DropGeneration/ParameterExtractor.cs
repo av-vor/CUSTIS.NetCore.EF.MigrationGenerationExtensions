@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Humanizer;
 
 namespace CUSTIS.NetCore.EF.MigrationGenerationExtensions.PostgreSQL.DropGeneration
 {
@@ -21,8 +22,20 @@ namespace CUSTIS.NetCore.EF.MigrationGenerationExtensions.PostgreSQL.DropGenerat
                 return string.Empty;
             }
 
-            var closePos = sql.IndexOf(')', startIndex);
-            return sql.Substring(openPos, closePos - openPos).TrimStart('(').TrimEnd(')');
+            var depth = 1;
+            for (var i = openPos + 1; i < sql.Length; i++)
+            {
+                if (sql[i] == '(')
+                {
+                    depth++;
+                }
+                else if (sql[i] == ')' && --depth == 0)
+                {
+                    return sql.Substring(openPos + 1, i - openPos - 1).Trim();
+                }
+            }
+
+            return string.Empty;
         }
 
         /// <summary> Извлекает типы параметров (например, "integer", "text[]") </summary>
@@ -38,8 +51,10 @@ namespace CUSTIS.NetCore.EF.MigrationGenerationExtensions.PostgreSQL.DropGenerat
 
             foreach (var token in tokens)
             {
-                var clean = Regex.Replace(token, @"\b(IN|OUT|INOUT|VARIADIC|DEFAULT[^,\)]*)\b", string.Empty,
+                var clean = Regex.Replace(token, @"\b(INOUT|IN|OUT|VARIADIC|DEFAULT[^,\)]*)\b", string.Empty,
                     RegexOptions.IgnoreCase).Trim();
+
+                var argmode = Regex.Match(token, @"\b(INOUT|IN|OUT|VARIADIC)\b", RegexOptions.IgnoreCase).Value;
 
                 if (string.IsNullOrEmpty(clean))
                 {
@@ -47,7 +62,7 @@ namespace CUSTIS.NetCore.EF.MigrationGenerationExtensions.PostgreSQL.DropGenerat
                 }
 
                 var parts = clean.Split([' '], StringSplitOptions.RemoveEmptyEntries);
-                var type = string.Join(' ', parts.Skip(1).ToArray());
+                var type = argmode + " " + string.Join(' ', parts.Skip(1).ToArray());
 
                 if (!string.IsNullOrEmpty(type))
                 {

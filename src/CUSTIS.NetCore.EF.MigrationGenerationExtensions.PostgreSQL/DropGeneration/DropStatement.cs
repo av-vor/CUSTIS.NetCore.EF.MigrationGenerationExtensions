@@ -63,7 +63,7 @@ namespace CUSTIS.NetCore.EF.MigrationGenerationExtensions.PostgreSQL.DropGenerat
 
         private string DropFunctionSql()
         {
-            var parameterList = string.Join(", ", ParameterTypes.Select(t => t.ToLower()));
+            var parameterList = string.Join(", ", ParameterTypes);
             return $"DROP FUNCTION IF EXISTS \"{Schema}\".\"{Name}\"({parameterList});";
         }
 
@@ -71,7 +71,7 @@ namespace CUSTIS.NetCore.EF.MigrationGenerationExtensions.PostgreSQL.DropGenerat
 
         private string DropProcedureSql()
         {
-            var parameterList = string.Join(", ", ParameterTypes.Select(t => t.ToLower()));
+            var parameterList = string.Join(", ", ParameterTypes);
             return $"DROP PROCEDURE IF EXISTS \"{Schema}\".\"{Name}\"({parameterList});";
         }
 
