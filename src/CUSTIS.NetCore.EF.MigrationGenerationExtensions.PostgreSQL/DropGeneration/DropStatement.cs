@@ -41,9 +41,12 @@ namespace CUSTIS.NetCore.EF.MigrationGenerationExtensions.PostgreSQL.DropGenerat
                 "FUNCTION" => DropFunctionSql(),
                 "PROCEDURE" => DropProcedureSql(),
                 "TRIGGER" => DropTriggerSql(),
+                "TYPE" => DropTypeSql(),
                 _ => string.Empty
             };
         }
+
+        private string DropTypeSql() => $"DROP TYPE IF EXISTS \"{Schema}\".\"{Name}\";";
 
         private string DropTriggerSql()
         {

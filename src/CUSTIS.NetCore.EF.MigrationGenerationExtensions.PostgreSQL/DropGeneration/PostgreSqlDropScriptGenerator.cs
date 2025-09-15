@@ -11,6 +11,7 @@ namespace CUSTIS.NetCore.EF.MigrationGenerationExtensions.PostgreSQL.DropGenerat
     {
         private readonly IReadOnlyList<IDatabaseObjectParser> _parsers =
         [
+            new TypeParser(),
             new ViewParser(),
             new FunctionParser(),
             new ProcedureParser(),

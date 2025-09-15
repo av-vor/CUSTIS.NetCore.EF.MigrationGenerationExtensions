@@ -51,10 +51,14 @@ namespace CUSTIS.NetCore.EF.MigrationGenerationExtensions.PostgreSQL.DropGenerat
 
             foreach (var token in tokens)
             {
-                var clean = Regex.Replace(token, @"\b(INOUT|IN|OUT|VARIADIC|DEFAULT[^,\)]*)\b", string.Empty,
-                    RegexOptions.IgnoreCase).Trim();
+                var defaultPattern = @"\b(DEFAULT[^,\)]*)";
+                var argmodePattern = @"\b(INOUT|IN|OUT|VARIADIC)\b";
 
-                var argmode = Regex.Match(token, @"\b(INOUT|IN|OUT|VARIADIC)\b", RegexOptions.IgnoreCase).Value;
+                var clean = token;
+                foreach (string pattern in new[] { defaultPattern, argmodePattern })
+                {
+                    clean = Regex.Replace(clean, pattern, string.Empty, RegexOptions.IgnoreCase).Trim();
+                }
 
                 if (string.IsNullOrEmpty(clean))
                 {
@@ -62,7 +66,14 @@ namespace CUSTIS.NetCore.EF.MigrationGenerationExtensions.PostgreSQL.DropGenerat
                 }
 
                 var parts = clean.Split([' '], StringSplitOptions.RemoveEmptyEntries);
-                var type = argmode + " " + string.Join(' ', parts.Skip(1).ToArray());
+
+                var argmode = Regex.Match(token, argmodePattern, RegexOptions.IgnoreCase).Value;
+                if (!string.IsNullOrEmpty(argmode))
+                {
+                    argmode += " ";
+                }
+
+                var type = argmode + string.Join(' ', parts.Skip(1).ToArray());
 
                 if (!string.IsNullOrEmpty(type))
                 {
