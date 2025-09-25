@@ -20,6 +20,7 @@ namespace CUSTIS.NetCore.EF.MigrationGenerationExtensions.PostgreSQL.DropGenerat
 
             return new DropStatement.Builder("TYPE", name)
                 .SetSchema(schema)
+                .SetStartPosition(match.Index)
                 .Build();
         }
     }

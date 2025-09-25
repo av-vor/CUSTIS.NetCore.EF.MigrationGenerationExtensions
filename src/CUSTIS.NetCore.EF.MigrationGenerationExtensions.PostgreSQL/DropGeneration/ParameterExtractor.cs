@@ -51,7 +51,7 @@ namespace CUSTIS.NetCore.EF.MigrationGenerationExtensions.PostgreSQL.DropGenerat
 
             foreach (var token in tokens)
             {
-                var defaultPattern = @"\b(DEFAULT[^,\)]*)";
+                var defaultPattern = @"(( ?DEFAULT | ?=)[^,\)]*)";
                 var argmodePattern = @"\b(INOUT|IN|OUT|VARIADIC)\b";
 
                 var clean = token;
